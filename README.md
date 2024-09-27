@@ -1,4 +1,8 @@
-# Steps to Reproduce:
+### Description
+
+The use of `ANALYZER` in a schema [breaks the creation of new documents when such documents are being added in parallel](https://github.com/zvictor/bug-surrealdb-read-conflict).
+
+### Steps to Reproduce:
 
 1. Set the connection data:
 
@@ -12,34 +16,28 @@ export SURREAL_DATABASE=bug
 
 2. Run `node bug.js`
 
-# Expected Output:
+### Expected Output:
 
 ```haskell
 >>> schema loaded
 creating book 0
 creating book 1
-creating book 2
-creating book 3
-creating book 4
-
 ...
+
 created book { id: RecordId { tb: 'book', id: '5qx3rjcdl5sxp1ayn9y6' } }
 100 items processed
 	* 100	 succeeded
 	* 0 	 failed
 ```
 
-# What we get:
+### What we get instead:
 
 ```haskell
 >>> schema loaded
 creating book 0
 creating book 1
-creating book 2
-creating book 3
-creating book 4
-
 ...
+
 created book { id: RecordId { tb: 'book', id: 'mvt0hcdse5rvjyglcs9e' } }
 failed to create book 2
 ResponseError: The query was not executed due to a failed transaction. There was a problem with a datastore transaction: Transaction read conflict
@@ -61,7 +59,9 @@ ResponseError: The query was not executed due to a failed transaction. There was
     at async file:///tmp/bug-surrealdb-read-conflict/bug.js:40:21
     at async Promise.allSettled (index 6)
     at async file:///tmp/bug-surrealdb-read-conflict/bug.js:58:16
+...
+
 100 items processed
-	* 48	 succeeded
-	* 52	 failed
+	* 29	 succeeded
+	* 71	 failed
 ```
